@@ -19,14 +19,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 interface ProfileUser {
   id: string;
@@ -63,15 +55,10 @@ const Profile = () => {
         
         // Construct the full image URL
         const baseUrl = import.meta.env.VITE_API_URL || '';
-        let fullImageUrl = userData.profileImage;
-
-        // Only prepend baseUrl if the image is not a full URL (like ui-avatars.com)
-        if (userData.profileImage && !userData.profileImage.startsWith('http')) {
-          const imagePath = userData.profileImage.startsWith('/') 
-            ? userData.profileImage 
-            : `/${userData.profileImage}`;
-          fullImageUrl = `${baseUrl}${imagePath}`;
-        }
+        const imagePath = userData.profileImage.startsWith('/') 
+          ? userData.profileImage 
+          : `/${userData.profileImage}`;
+        const fullImageUrl = `${baseUrl}${imagePath}`;
 
         // Test if the image exists before setting it
         const img = new Image();
@@ -252,66 +239,32 @@ const Profile = () => {
                 </Button>
               ) : (
                 <div className="flex gap-2">
-                  {!profileUser.isFollowing && (
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={handleFollowToggle}
-                      disabled={followLoading}
-                      className="flex items-center gap-2"
-                    >
-                      {followLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <span>Follow</span>
-                      )}
-                    </Button>
-                  )}
-                  {profileUser.isFollowing && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={followLoading}
-                          className="text-black dark:text-white hover:bg-blue-900 hover:text-white dark:hover:bg-blue-900"
-                        >
-                          {followLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <div className="flex items-center gap-1">
-                              <span>Following</span>
-                              <ChevronDown className="h-4 w-4" />
-                            </div>
-                          )}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56 p-0 bg-white dark:bg-black">
-                        <div className="flex flex-col items-center p-4">
-                          <Avatar className="h-16 w-16 mb-2">
-                            <AvatarImage 
-                              src={profileUser.profileImage} 
-                              alt={profileUser.username}
-                              onError={(e) => {
-                                console.error('Profile image load error:', e);
-                                const color = generateColorFromString(profileUser.username);
-                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profileUser.fullName)}&background=${color.substring(1)}`;
-                              }}
-                            />
-                            <AvatarFallback>{profileUser.username[0].toUpperCase()}</AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium">{profileUser.username}</span>
-                        </div>
-                        <Separator />
-                        <DropdownMenuItem
-                          onClick={() => setShowUnfollowDialog(true)}
-                          className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-900/20 py-2"
-                        >
-                          Unfollow
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                <Button
+                    variant="default"
+                  size="sm"
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                    className="flex items-center gap-2"
+                  >
+                    {followLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <span>Follow</span>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowUnfollowDialog(true)}
+                    disabled={followLoading}
+                    className="text-black dark:text-white hover:bg-blue-900 hover:text-white dark:hover:bg-blue-900"
+                  >
+                    {followLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <span>Unfollow</span>
+                    )}
+                </Button>
                 </div>
               )}
             </div>
